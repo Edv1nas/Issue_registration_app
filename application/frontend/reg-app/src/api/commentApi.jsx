@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
 
 export const fetchComments = async (taskId, token) => {
   const response = await fetch(`${API_BASE_URL}/comments/tasks/${taskId}/comments/`, {
