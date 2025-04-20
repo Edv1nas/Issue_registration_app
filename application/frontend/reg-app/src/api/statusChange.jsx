@@ -2,7 +2,7 @@ export const updateTaskStatus = async (taskId, statusName) => {
   const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
   
     try {
-      const response = await fetch(`${API_URL}/tasks/${taskId}/status?status_name=${encodeURIComponent(statusName)}`, {
+      const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/status?status_name=${encodeURIComponent(statusName)}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
