@@ -1,6 +1,5 @@
 Pipfile
 Pipfile.Lock
-.env
 README.md
 application/backend/db.sqlite
 application/backend/logfile.log
