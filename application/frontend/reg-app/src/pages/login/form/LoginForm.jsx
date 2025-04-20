@@ -21,22 +21,24 @@ const LoginForm = () => {
 
     
     
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
         const handleSubmit = async (event) => {
             event.preventDefault();
             if (!validateForm()) return;
             setLoading(true);
-    
+        
             const formDetails = new URLSearchParams();
             formDetails.append('username', username);
             formDetails.append('password', password);
-    
+        
             try {
-                const response = await fetch('http://localhost:8000/api/v1/tokens/token', {
+                const response = await fetch(`${API_BASE_URL}/tokens/token`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formDetails,
                 });
-    
+        
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('token', data.access_token);
@@ -51,6 +53,7 @@ const LoginForm = () => {
                 setLoading(false);
             }
         };
+        
     return (
         <form onSubmit={handleSubmit} className="p-3">
                     

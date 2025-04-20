@@ -1,5 +1,5 @@
 export const updateTaskStatus = async (taskId, statusName) => {
-    const API_URL = 'http://localhost:8000/api/v1/tasks';
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   
     try {
       const response = await fetch(`${API_URL}/tasks/${taskId}/status?status_name=${encodeURIComponent(statusName)}`, {
