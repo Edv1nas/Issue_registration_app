@@ -20,8 +20,8 @@ services:
       dockerfile: application/frontend/Dockerfile
     ports:
       - "3000:80"  # Expose React app on port 3000 (host) and 80 (container)
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
     depends_on:
       - backend
 
@@ -32,12 +32,12 @@ services:
       dockerfile: application/backend/Dockerfile
     ports:
       - "8000:8000"  # Expose FastAPI app on port 8000
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     # env_file:
     #   - .env
-    networks:
-      - app_network
+    # networks:
+    #   - app_network
 
 
 networks:
