@@ -5,6 +5,7 @@ from crud.task_crud import (
     get_task,
     get_all_tasks_from_db,
     get_tasks_by_client_email,
+    update_task_status
 )
 from database.db import get_db
 from schemas.task_schemas import TaskCreate, TaskResponse
@@ -40,4 +41,12 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db_task = get_task(task_id, db)
     db.delete(db_task)
     db.commit()
-    return {"message": f"Task {db_task.description} deleted successfully."}
+    return {"message": f"Task {db_task.summary} deleted successfully."}
+
+
+@router.put("/tasks/{task_id}/status", response_model=TaskResponse)
+def change_task_status(
+    task_id: int, status_name: str, db: Session = Depends(get_db)
+):
+    updated_task = update_task_status(db, task_id, status_name)
+    return updated_task

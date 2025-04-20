@@ -1,2 +1,7 @@
 Pipfile
-Pipfile.lock
+Pipfile.Lock    
+README.md
+application/backend/db.sqlite
+application/backend/logfile.log
+application/frontend/logfile.log
+.vscode

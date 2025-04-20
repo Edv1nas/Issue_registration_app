@@ -1,0 +1,47 @@
+version: "3.11"
+services:
+
+  database:
+    container_name: tasks_database
+    image: postgres:15
+    env_file:
+      - .env
+    volumes:
+      - postgre:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: application/frontend/Dockerfile
+    ports:
+      - "3000:80"  # Expose React app on port 3000 (host) and 80 (container)
+    networks:
+      - app_network
+    depends_on:
+      - backend
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: application/backend/Dockerfile
+    ports:
+      - "8000:8000"  # Expose FastAPI app on port 8000
+    depends_on:
+      - database
+    env_file:
+      - .env
+    networks:
+      - app_network
+
+
+networks:
+  app_network:
+
+volumes:
+  postgre:
