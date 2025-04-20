@@ -1,17 +1,17 @@
 version: "3.11"
 services:
 
-  database:
-    container_name: tasks_database
-    image: postgres:15
-    env_file:
-      - .env
-    volumes:
-      - postgre:/var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
-    networks:
-      - app_network
+  # database:
+  #   container_name: tasks_database
+  #   image: postgres:15
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - postgre:/var/lib/postgresql/data/
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - app_network
 
   frontend:
     container_name: frontend
@@ -34,8 +34,8 @@ services:
       - "8000:8000"  # Expose FastAPI app on port 8000
     depends_on:
       - database
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     networks:
       - app_network
 
