@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import 
 
 const LoginForm = () => {
        const [username, setUsername] = useState('');
@@ -21,7 +22,7 @@ const LoginForm = () => {
 
     
     
-        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
 
         const handleSubmit = async (event) => {
             event.preventDefault();
