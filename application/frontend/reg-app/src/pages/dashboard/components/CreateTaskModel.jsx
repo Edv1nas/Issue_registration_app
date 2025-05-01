@@ -5,18 +5,43 @@ const CreateTaskModal = ({ open, handleClose, onCreateTask }) => {
   const [email, setEmail] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
+  const [file, setFile] = useState(null);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!email.trim() || !summary.trim() || !description.trim()) {
-      alert("Both fields are required!");
+      alert("All fields are required!");
       return;
     }
 
-    onCreateTask({ client_email: email, summary: summary, description: description });
-    setEmail('');
-    setSummary('');
-    setDescription('');
-    handleClose();
+    try {
+      let imagePath = null;
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const uploadResponse = await fetch('/upload-image/', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('Image upload failed');
+        }
+
+        const uploadData = await uploadResponse.json();
+        imagePath = uploadData.file_path;
+      }
+
+      onCreateTask({ client_email: email, summary, description, image_path: imagePath });
+      setEmail('');
+      setSummary('');
+      setDescription('');
+      setFile(null);
+      handleClose();
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -52,6 +77,15 @@ const CreateTaskModal = ({ open, handleClose, onCreateTask }) => {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
+        <Button variant="contained" component="label" sx={{ mt: 2 }}>
+          Upload Image
+          <input
+            type="file"
+            style={{ display: 'none' }}
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+        </Button>
+        {file && <Typography variant="body2" mt={1}>Selected: {file.name}</Typography>}
         <Button variant="contained" color="primary" onClick={handleCreate} sx={{ mt: 2 }}>
           Create
         </Button>
