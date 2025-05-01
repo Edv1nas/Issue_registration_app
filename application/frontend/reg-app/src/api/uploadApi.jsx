@@ -4,7 +4,7 @@ export const uploadFile = async (file, taskId) => {
     const formData = new FormData();
     formData.append('file', file);
   
-    const response = await fetch(`${API_BASE_URL}/api/v1/images/upload-image/?task_id=${taskId}`, {
+    const response = await fetch(`${API_BASE_URL}/images/upload-image/?task_id=${taskId}`, {
       method: 'POST',
       body: formData,
     });
