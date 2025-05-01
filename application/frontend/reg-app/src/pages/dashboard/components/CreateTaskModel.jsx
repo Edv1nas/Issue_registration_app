@@ -20,7 +20,7 @@ const CreateTaskModal = ({ open, handleClose, onCreateTask }) => {
         const formData = new FormData();
         formData.append('file', file);
 
-        const uploadResponse = await fetch('/upload-image/', {
+        const uploadResponse = await fetch('api/v1/images/upload-image/', {
           method: 'POST',
           body: formData,
         });
