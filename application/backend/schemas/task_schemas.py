@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
-from typing import List
+from typing import List, Optional
 from schemas.comment_schemas import CommentResponse
 
 class TaskStatusResponse(BaseModel):
@@ -20,6 +20,7 @@ class TaskCreate(BaseModel):
     client_email: EmailStr
     summary: str
     description: str
+    image_path: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -28,6 +29,7 @@ class TaskCreate(BaseModel):
                 "client_email": "bob@hotmail.com",
                 "summary": "summary",
                 "description": "description",
+                "image_path": "/uploads/example.jpg"
             }
         }
 
@@ -41,6 +43,7 @@ class TaskResponse(BaseModel):
     updated_at: datetime
     status: TaskStatusResponse
     comments: List[CommentResponse]
+    image_path: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -65,5 +68,6 @@ class TaskResponse(BaseModel):
                         "created_at": "2025-03-16T12:34:56",
                     }
                 ],
+                "image_path": "/uploads/example.jpg",
             }
         }
