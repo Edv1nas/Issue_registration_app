@@ -4,7 +4,10 @@ from fastapi import HTTPException
 from schemas.task_schemas import TaskCreate
 from models.task_status import TaskStatus
 from datetime import datetime
+import logging
 
+
+logger = logging.getLogger("sLogger")
 
 
 def create_task(task: TaskCreate, db: Session) -> Task:
@@ -80,3 +83,24 @@ def update_task_status(db: Session, task_id: int, status_name: str):
     db.commit()
     db.refresh(task)
     return task
+
+def update_task_image_path(db: Session, task_id: int, update_data: dict):
+    try:
+        task = db.query(Task).filter(Task.id == task_id).first()
+        if not task:
+            logger.warning(f"Task with ID {task_id} not found for update.")
+            return None
+
+        for key, value in update_data.items():
+            if hasattr(task, key):
+                setattr(task, key, value)
+
+        db.commit()
+        db.refresh(task)
+        logger.info(f"Task {task_id} updated successfully with data: {update_data}")
+        return task
+
+    except Exception as e:
+        logger.error(f"Error updating task {task_id}: {e}")
+        db.rollback()
+        raise

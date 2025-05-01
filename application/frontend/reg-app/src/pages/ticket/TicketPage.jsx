@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert, CircularProgress, Paper } from '@mui/material';
-import { createTask } from '../../api/taskApi';
+import { createTask, updateTask } from '../../api/taskApi';
 import { uploadFile } from '../../api/uploadApi';
 
 const TicketPage = () => {
@@ -12,6 +12,46 @@ const TicketPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   setLoading(true);
+  //   setErrorMessage('');
+
+  //   if (!email.trim() || !summary.trim() || !description.trim()) {
+  //     setErrorMessage('All fields are required.');
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     let imagePath = null;
+
+  //     if (file) {
+  //       const uploadData = await uploadFile(file);
+  //       imagePath = uploadData.file_path;
+  //     }
+
+  //     const ticketData = {
+  //       client_email: email.trim(),
+  //       summary: summary.trim(),
+  //       description: description.trim(),
+  //       image_path: imagePath,
+  //     };
+
+  //     const token = localStorage.getItem('token') || '';
+  //     await createTask(ticketData, token);
+
+  //     setIsSubmitted(true);
+  //     setEmail('');
+  //     setSummary('');
+  //     setDescription('');
+  //     setFile(null);
+  //   } catch (error) {
+  //     setErrorMessage(error.message || 'Submission failed.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -21,37 +61,46 @@ const TicketPage = () => {
       setErrorMessage('All fields are required.');
       setLoading(false);
       return;
-    }
-
-    try {
-      let imagePath = null;
-
-      if (file) {
-        const uploadData = await uploadFile(file);
-        imagePath = uploadData.file_path;
       }
-
-      const ticketData = {
+  
+    try {
+      const taskData = {
         client_email: email.trim(),
         summary: summary.trim(),
         description: description.trim(),
-        image_path: imagePath,
       };
-
+  
       const token = localStorage.getItem('token') || '';
-      await createTask(ticketData, token);
+      if (!token) {
+        setErrorMessage('Authentication required.');
+        setLoading(false);
+        return;
+      }
 
+      const createdTask = await createTask(taskData, token); 
+  
+      let imagePath = null;
+  
+      if (file) {
+        const uploadData = await uploadFile(file, createdTask.id);
+        imagePath = uploadData.file_path;
+  
+        await updateTask(createdTask.id, { image_path: imagePath }, token);
+      }
+  
       setIsSubmitted(true);
       setEmail('');
       setSummary('');
       setDescription('');
       setFile(null);
+      
     } catch (error) {
       setErrorMessage(error.message || 'Submission failed.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleNewTicket = () => {
     setIsSubmitted(false);

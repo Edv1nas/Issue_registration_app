@@ -1,10 +1,10 @@
 const API_BASE_URL = 'http://192.168.1.140:8000/api/v1'
 
-export const uploadFile = async (file) => {
+export const uploadFile = async (file, taskId) => {
     const formData = new FormData();
     formData.append('file', file);
   
-    const response = await fetch(`${API_BASE_URL}/images/upload-image/`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/images/upload-image/?task_id=${taskId}`, {
       method: 'POST',
       body: formData,
     });
