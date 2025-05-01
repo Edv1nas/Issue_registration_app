@@ -28,3 +28,16 @@ export const fetchTaskDetails = async (taskId, token) => {
   if (!response.ok) throw new Error('Failed to fetch task details');
   return await response.json();
 };
+
+export const updateTask = async (taskId, taskData, token) => {
+  const response = await fetch(`${API_BASE_URL}/tasks/tasks/${taskId}/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(taskData),
+  });
+  if (!response.ok) throw new Error('Failed to update task');
+  return await response.json();
+};
