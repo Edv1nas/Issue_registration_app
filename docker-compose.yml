@@ -28,6 +28,8 @@ services:
 
   backend:
     container_name: backend
+    volumes:
+      - uploads_volume:/app/uploads
     build:
       context: .
       dockerfile: application/backend/Dockerfile
@@ -46,4 +48,7 @@ networks:
   app_network:
 
 volumes:
-  postgre:
+  uploads_volume:
+  
+# volumes:
+#   postgre:
