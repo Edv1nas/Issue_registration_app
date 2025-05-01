@@ -17,7 +17,7 @@ logger = logging.getLogger("sLogger")
 router = APIRouter()
 
 
-@router.post("/tasks/", response_model=TaskCreate)
+@router.post("/tasks/", response_model=TaskResponse)
 def create_new_task(task: TaskCreate, db: Session = Depends(get_db)):
     return create_task(task, db)
 
