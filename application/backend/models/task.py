@@ -21,3 +21,5 @@ class Task(Base):
     comments = relationship(
         "Comment", back_populates="task", cascade="all, delete-orphan"
     )
+    uploads = relationship("ImageUpload", back_populates="task", cascade="all, delete")
+
