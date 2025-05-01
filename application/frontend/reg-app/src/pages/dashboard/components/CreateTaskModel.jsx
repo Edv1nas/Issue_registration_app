@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import { uploadFile } from '../../../api/uploadApi';
 
 const CreateTaskModal = ({ open, handleClose, onCreateTask }) => {
   const [email, setEmail] = useState('');
@@ -17,19 +18,7 @@ const CreateTaskModal = ({ open, handleClose, onCreateTask }) => {
       let imagePath = null;
 
       if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const uploadResponse = await fetch('/upload-image/', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('Image upload failed');
-        }
-
-        const uploadData = await uploadResponse.json();
+        const uploadData = await uploadFile(file);
         imagePath = uploadData.file_path;
       }
 
