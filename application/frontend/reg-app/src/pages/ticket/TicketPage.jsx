@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Alert, CircularProgress, Paper } from '@mui/material';
 import { createTask } from '../../api/taskApi';
+import { uploadFile } from '../../api/uploadApi';
 
 const TicketPage = () => {
   const [email, setEmail] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
-  const [file, setFile] = useState(null); // NEW for file
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -25,21 +26,8 @@ const TicketPage = () => {
     try {
       let imagePath = null;
 
-      // If user attached a file, upload it first
       if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        const uploadResponse = await fetch('api/v1/images/upload-image/', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('Image upload failed');
-        }
-
-        const uploadData = await uploadResponse.json();
+        const uploadData = await uploadFile(file);
         imagePath = uploadData.file_path;
       }
 
@@ -47,7 +35,7 @@ const TicketPage = () => {
         client_email: email.trim(),
         summary: summary.trim(),
         description: description.trim(),
-        image_path: imagePath, // Include the image path if uploaded
+        image_path: imagePath,
       };
 
       const token = localStorage.getItem('token') || '';
@@ -57,7 +45,7 @@ const TicketPage = () => {
       setEmail('');
       setSummary('');
       setDescription('');
-      setFile(null); // Clear file
+      setFile(null);
     } catch (error) {
       setErrorMessage(error.message || 'Submission failed.');
     } finally {
