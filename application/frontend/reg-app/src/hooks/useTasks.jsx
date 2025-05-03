@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchTasks, createTask, fetchTaskDetails } from '../api/taskApi';
 import { verifyToken } from '../api/authApi';
@@ -11,16 +11,17 @@ const useTasks = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getToken = () => {
+
+  const getToken = useCallback(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       throw new Error('No authentication token found');
     }
     return token;
-  };
+  }, [navigate]);
 
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -33,7 +34,7 @@ const useTasks = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [getToken]);
 
   const handleCreateTask = async (newTask) => {
     setIsLoading(true);
@@ -83,7 +84,7 @@ const useTasks = () => {
       }
     };
     initialize();
-  }, []);
+  }, [getToken, loadTasks, navigate]);
 
   return { 
     tasks, 

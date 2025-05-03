@@ -1,0 +1,129 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ThemeProvider, CssBaseline, createTheme, Box } from '@mui/material';
+import AuthLayout from '../../../components/layout/AuthLayout';
+import ThemeToggle from '../../../components/ui/ThemeToggle';
+import LoginForm from './LoginForm';
+import AuthDialog from '../../../components/features/auth/AuthDialog';
+import ThemeLogo from '../../../components/ui/ThemeLogo';
+
+const LoginPage = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [formValid, setFormValid] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [themeMode, setThemeMode] = useState('light');
+
+  const navigate = useNavigate();
+  const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('themeMode') || 'light';
+    setThemeMode(savedTheme);
+  }, []);
+
+  const theme = useMemo(() =>
+    createTheme({
+      palette: {
+        mode: themeMode,
+      },
+    }), [themeMode]);
+
+  const toggleTheme = () => {
+    const newTheme = themeMode === 'light' ? 'dark' : 'light';
+    setThemeMode(newTheme);
+    localStorage.setItem('themeMode', newTheme);
+  };
+
+  useEffect(() => {
+    setFormValid(username.trim().length > 0 && password.length > 0);
+  }, [username, password]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+
+    if (!formValid) {
+      setError('Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/tokens/token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          username: username.toLowerCase().trim(),
+          password: password,
+        }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Authentication failed.');
+      }
+
+      const data = await response.json();
+      localStorage.setItem('token', data.access_token);
+      localStorage.setItem('token_timestamp', Date.now().toString());
+      navigate('/Dashboard', { replace: true });
+    } catch (error) {
+      setError(error.message || 'An error occurred. Please try again.');
+      setPassword('');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSupportClick = (e) => {
+    e.preventDefault();
+    setDialogOpen(true);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthLayout>
+        <Box display="flex" justifyContent="flex-end">
+          <ThemeToggle themeMode={themeMode} toggleTheme={toggleTheme} />
+        </Box>
+        <Box sx={{ 
+          textAlign: 'center', 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+            <ThemeLogo size={90} /> 
+        </Box>
+
+
+        <LoginForm
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          error={error}
+          setError={setError}
+          loading={loading}
+          formValid={formValid}
+          onSubmit={handleSubmit}
+          onSupportClick={handleSupportClick}
+        />
+
+        <AuthDialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          title="Need Help?"
+          content="Please contact your IT support team to reset your password or request account access."
+        />
+      </AuthLayout>
+    </ThemeProvider>
+  );
+};
+
+export default LoginPage;
