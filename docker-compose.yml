@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: application/frontend/Dockerfile
     ports:
-      - "3000:80"  # Expose React app on port 3000 (host) and 80 (container)
+      - "3000:80"  
     restart: always
     # networks:
     #   - app_network
@@ -34,7 +34,7 @@ services:
       context: .
       dockerfile: application/backend/Dockerfile
     ports:
-      - "8000:8000"  # Expose FastAPI app on port 8000
+      - "8000:8000"
     restart: always
     # depends_on:
     #   - database
@@ -49,6 +49,8 @@ networks:
 
 volumes:
   uploads_volume:
-  
+    name: app_uploads_volume
+    driver: local
+
 # volumes:
 #   postgre:
