@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, createTheme, Box } from '@mui/material';
+import { ThemeProvider, CssBaseline, createTheme, Box, Typography, Link} from '@mui/material';
 import AuthLayout from '../../../components/layout/AuthLayout';
 import ThemeToggle from '../../../components/ui/ThemeToggle';
 import LoginForm from './LoginForm';
@@ -116,10 +116,31 @@ const LoginPage = () => {
         />
 
         <AuthDialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          title="Need Help?"
-          content="Please contact your IT support team to reset your password or request account access."
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        title="Need Help?"
+        content={
+            <Typography variant="body1" component="div">
+            Please contact your IT support team to reset your password, request account access, or fill out the {' '}
+            <Link 
+                href="/Form"  
+                onClick={(e) => {
+                e.preventDefault();
+                navigate('/Form');
+                setDialogOpen(false);
+                }}
+                sx={{
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                textDecoration: 'underline',
+                color: (theme) => theme.palette.primary.main
+                }}
+            >
+                form
+            </Link>
+            .
+            </Typography>
+        }
         />
       </AuthLayout>
     </ThemeProvider>
