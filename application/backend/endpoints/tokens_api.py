@@ -36,7 +36,7 @@ def login_for_access_token(
 @router.get("/verify_token/{token}")
 def verify_account_token(token: str):
     try:
-        payload = verify_token(token=token)  # Get token claims
+        payload = verify_token(token=token)
         return {"message": "Token is valid", "data": payload}
     except HTTPException as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
