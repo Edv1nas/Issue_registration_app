@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, Alert, CircularProgress, Paper } from '@mui/material';
+import { Container, Box, Paper } from '@mui/material';
+import { useTheme } from '../../context/ThemeContext';
 import { createTask, updateTask } from '../../api/taskApi';
 import { uploadFile } from '../../api/uploadApi';
+import TicketForm from './TicketForm';
+import SubmissionSuccess from '../../components/features/ticket/SubmissionSuccess';
+import ThemeToggle from '../../components/ui/ThemeToggle';
+import { IconButton } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const TicketPage = () => {
   const [email, setEmail] = useState('');
@@ -11,47 +20,10 @@ const TicketPage = () => {
   const [loading, setLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  
+  const { themeMode, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setLoading(true);
-  //   setErrorMessage('');
-
-  //   if (!email.trim() || !summary.trim() || !description.trim()) {
-  //     setErrorMessage('All fields are required.');
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     let imagePath = null;
-
-  //     if (file) {
-  //       const uploadData = await uploadFile(file);
-  //       imagePath = uploadData.file_path;
-  //     }
-
-  //     const ticketData = {
-  //       client_email: email.trim(),
-  //       summary: summary.trim(),
-  //       description: description.trim(),
-  //       image_path: imagePath,
-  //     };
-
-  //     const token = localStorage.getItem('token') || '';
-  //     await createTask(ticketData, token);
-
-  //     setIsSubmitted(true);
-  //     setEmail('');
-  //     setSummary('');
-  //     setDescription('');
-  //     setFile(null);
-  //   } catch (error) {
-  //     setErrorMessage(error.message || 'Submission failed.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -61,15 +33,15 @@ const TicketPage = () => {
       setErrorMessage('All fields are required.');
       setLoading(false);
       return;
-      }
-  
+    }
+
     try {
       const taskData = {
         client_email: email.trim(),
         summary: summary.trim(),
         description: description.trim(),
       };
-  
+
       const token = localStorage.getItem('token') || '';
       if (!token) {
         setErrorMessage('Authentication required.');
@@ -78,32 +50,27 @@ const TicketPage = () => {
       }
 
       const createdTask = await createTask(taskData, token); 
-  
+
       let imagePath = null;
-  
+
       if (file) {
         const uploadData = await uploadFile(file, createdTask.id);
         imagePath = uploadData.file_path;
-  
+
         await updateTask(createdTask.id, { image_path: imagePath }, token);
       }
-  
+
       setIsSubmitted(true);
-      setEmail('');
-      setSummary('');
-      setDescription('');
-      setFile(null);
+      resetForm();
       
     } catch (error) {
-      setErrorMessage(error.message || 'Submission failed.');
+      setErrorMessage(error.message || 'Submission failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  
 
-  const handleNewTicket = () => {
-    setIsSubmitted(false);
+  const resetForm = () => {
     setEmail('');
     setSummary('');
     setDescription('');
@@ -111,76 +78,76 @@ const TicketPage = () => {
     setErrorMessage('');
   };
 
+  const handleNewTicket = () => {
+    setIsSubmitted(false);
+    resetForm();
+  };
+
   return (
     <Container maxWidth="sm">
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh">
-        <Paper elevation={3} sx={{ padding: 4, width: '100%', textAlign: 'center' }}>
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        alignItems="center" 
+        justifyContent="center" 
+        minHeight="100vh"
+        py={4}
+      >
+        <Paper 
+          elevation={3} 
+          sx={{ 
+            padding: 4, 
+            width: '100%', 
+            textAlign: 'center',
+            backgroundColor: themeMode === 'dark' ? 'background.paper' : undefined,
+            position: 'relative'
+          }}
+        >
+          <Box display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+            mb={3}
+          >
+            <IconButton 
+              onClick={() => navigate('/')}
+              sx={{
+                color: themeMode === 'dark' ? 'text.secondary' : 'text.primary',
+                '&:hover': {
+                  backgroundColor: 'transparent'
+                }
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <ThemeToggle themeMode={themeMode} toggleTheme={toggleTheme} />
+          </Box>
+          
           {!isSubmitted ? (
-            <>
-              <Typography variant="h4" gutterBottom>Submit an IT Issue</Typography>
-              {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-              <form onSubmit={handleSubmit}>
-                <TextField
-                  fullWidth
-                  label="Email address"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  fullWidth
-                  label="Summary"
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
-                  margin="normal"
-                  required
-                />
-                <TextField
-                  fullWidth
-                  label="Issue Description"
-                  multiline
-                  rows={7}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  margin="normal"
-                  required
-                />
-                {/* New: File upload */}
-                <Box mt={2}>
-                  <Button variant="outlined" component="label" fullWidth>
-                    {file ? file.name : 'Upload File'}
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
-                  </Button>
-                </Box>
-                <Box mt={2}>
-                  <Button variant="contained" color="primary" type="submit" disabled={loading} fullWidth>
-                    {loading ? <CircularProgress size={24} /> : 'Submit Ticket'}
-                  </Button>
-                </Box>
-              </form>
-            </>
+            <TicketForm
+              email={email}
+              setEmail={setEmail}
+              summary={summary}
+              setSummary={setSummary}
+              description={description}
+              setDescription={setDescription}
+              file={file}
+              setFile={setFile}
+              loading={loading}
+              errorMessage={errorMessage}
+              handleSubmit={handleSubmit}
+              themeMode={themeMode}
+            />
           ) : (
-            <>
-              <Typography variant="h4" gutterBottom>Thank You!</Typography>
-              <Typography>Your IT issue has been successfully submitted.</Typography>
-              <Box mt={2}>
-                <Button variant="contained" color="primary" onClick={handleNewTicket} fullWidth>
-                  Submit Another Ticket
-                </Button>
-              </Box>
-            </>
+            <SubmissionSuccess 
+              handleNewTicket={handleNewTicket} 
+              themeMode={themeMode}
+            />
           )}
         </Paper>
       </Box>
     </Container>
   );
-};
+}; 
 
 export default TicketPage;

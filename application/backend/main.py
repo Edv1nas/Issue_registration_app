@@ -16,8 +16,8 @@ create_initial_task_statuses(db)
 app = FastAPI()
 
 origins = [
+    "http://localhost:3000",
     "http://192.168.1.140:3000",
-    "http://yourfrontenddomain.com",
 ]
 
 app.add_middleware(

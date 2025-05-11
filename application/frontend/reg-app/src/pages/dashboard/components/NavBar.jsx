@@ -9,7 +9,7 @@ const Navbar = ({ onCreateTask }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/Login');
+    navigate('/');
   };
 
   return (
@@ -28,7 +28,6 @@ const Navbar = ({ onCreateTask }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Create Task Modal */}
       <CreateTaskModal open={open} handleClose={() => setOpen(false)} onCreateTask={onCreateTask} />
     </>
   );
