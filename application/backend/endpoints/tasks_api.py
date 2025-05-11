@@ -47,6 +47,14 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     return {"message": f"Task {db_task.summary} deleted successfully."}
 
 
+@router.put("/tasks/{task_id}/status", response_model=TaskResponse)
+def change_task_status(
+    task_id: int, status_name: str, db: Session = Depends(get_db)
+):
+    updated_task = update_task_status(db, task_id, status_name)
+    return updated_task
+
+
 @router.put("/tasks/{task_id}")
 def update_task(task_id: int, update_data: dict, db: Session = Depends(get_db)):
     try:

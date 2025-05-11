@@ -31,7 +31,7 @@ def create_task(task: TaskCreate, db: Session) -> Task:
 
 
 def get_all_tasks_from_db(db: Session):
-    task = db.query(Task).all()
+    task = db.query(Task).order_by(Task.id.asc()).all()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found.")
     return task
@@ -58,16 +58,6 @@ def delete_task_from_database(task_id: int, db: Session):
     return db_task
 
 
-def update_task_status(db: Session, task_id: int, new_status: TaskStatus):
-    task = db.query(Task).filter(Task.id == task_id).first()
-    if not task:
-        return None
-    task.status = new_status
-    db.commit()
-    db.refresh(task)
-    return task
-
-
 def update_task_status(db: Session, task_id: int, status_name: str):
     task = db.query(Task).filter(Task.id == task_id).first()
     if not task:
@@ -83,6 +73,7 @@ def update_task_status(db: Session, task_id: int, status_name: str):
     db.commit()
     db.refresh(task)
     return task
+
 
 def update_task_image_path(db: Session, task_id: int, update_data: dict):
     try:
