@@ -28,7 +28,6 @@ const Navbar = ({ onCreateTask }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Create Task Modal */}
       <CreateTaskModal open={open} handleClose={() => setOpen(false)} onCreateTask={onCreateTask} />
     </>
   );
