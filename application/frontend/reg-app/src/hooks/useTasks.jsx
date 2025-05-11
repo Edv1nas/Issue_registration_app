@@ -15,7 +15,7 @@ const useTasks = () => {
   const getToken = useCallback(() => {
     const token = localStorage.getItem('token');
     if (!token) {
-      navigate('/login');
+      navigate('/');
       throw new Error('No authentication token found');
     }
     return token;
@@ -80,7 +80,7 @@ const useTasks = () => {
         await loadTasks();
       } catch (err) {
         localStorage.removeItem('token');
-        navigate('/login');
+        navigate('/');
       }
     };
     initialize();
