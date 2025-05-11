@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, createTheme, Box, Typography, Link} from '@mui/material';
+import { Box, Typography, Link} from '@mui/material';
 import AuthLayout from '../../../components/layout/AuthLayout';
 import ThemeToggle from '../../../components/ui/ThemeToggle';
 import LoginForm from './LoginForm';
 import AuthDialog from '../../../components/features/auth/AuthDialog';
 import ThemeLogo from '../../../components/ui/ThemeLogo';
+import { useTheme } from '../../../context/ThemeContext';
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -14,28 +15,12 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [formValid, setFormValid] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [themeMode, setThemeMode] = useState('light');
+
+  const {themeMode, toggleTheme} = useTheme();
 
   const navigate = useNavigate();
-  const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('themeMode') || 'light';
-    setThemeMode(savedTheme);
-  }, []);
-
-  const theme = useMemo(() =>
-    createTheme({
-      palette: {
-        mode: themeMode,
-      },
-    }), [themeMode]);
-
-  const toggleTheme = () => {
-    const newTheme = themeMode === 'light' ? 'dark' : 'light';
-    setThemeMode(newTheme);
-    localStorage.setItem('themeMode', newTheme);
-  };
+  // const API_BASE_URL = 'http://192.168.1.140:8000/api/v1';
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     setFormValid(username.trim().length > 0 && password.length > 0);
@@ -86,64 +71,61 @@ const LoginPage = () => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthLayout>
-        <Box display="flex" justifyContent="flex-end">
-          <ThemeToggle themeMode={themeMode} toggleTheme={toggleTheme} />
-        </Box>
-        <Box sx={{ 
-          textAlign: 'center', 
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}>
-            <ThemeLogo size={90} /> 
-        </Box>
+    <AuthLayout>
+      <Box display="flex" justifyContent="flex-end">
+        <ThemeToggle themeMode={themeMode} toggleTheme={toggleTheme} />
+      </Box>
+      
+      <Box sx={{ 
+        textAlign: 'center', 
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
+        <ThemeLogo size={90} /> 
+      </Box>
 
+      <LoginForm
+        username={username}
+        setUsername={setUsername}
+        password={password}
+        setPassword={setPassword}
+        error={error}
+        setError={setError}
+        loading={loading}
+        formValid={formValid}
+        onSubmit={handleSubmit}
+        onSupportClick={handleSupportClick}
+      />
 
-        <LoginForm
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          error={error}
-          setError={setError}
-          loading={loading}
-          formValid={formValid}
-          onSubmit={handleSubmit}
-          onSupportClick={handleSupportClick}
-        />
-
-        <AuthDialog
+      <AuthDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title="Need Help?"
         content={
-            <Typography variant="body1" component="div">
+          <Typography variant="body1" component="div">
             Please contact your IT support team to reset your password, request account access, or fill out the {' '}
             <Link 
-                href="/Form"  
-                onClick={(e) => {
+              href="/Form"  
+              onClick={(e) => {
                 e.preventDefault();
                 navigate('/Form');
                 setDialogOpen(false);
-                }}
-                sx={{
+              }}
+              sx={{
                 cursor: 'pointer',
                 fontWeight: 'bold',
                 textDecoration: 'underline',
                 color: (theme) => theme.palette.primary.main
-                }}
+              }}
             >
-                form
+              form
             </Link>
             .
-            </Typography>
+          </Typography>
         }
-        />
-      </AuthLayout>
-    </ThemeProvider>
+      />
+    </AuthLayout>
   );
 };
 

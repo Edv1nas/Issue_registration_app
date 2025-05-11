@@ -57,7 +57,7 @@ const LoginForm = ({
       </LoadingButton>
 
       <Box sx={{ textAlign: 'center', mt: 2 }}>
-        <Link href="#" variant="body2" onClick={onSupportClick}>
+        <Link href="#" variant="body2" onClick={onSupportClick} underline="none">
           Forgot password?
         </Link>
       </Box>
@@ -65,7 +65,7 @@ const LoginForm = ({
       <Box sx={{ textAlign: 'center', mt: 1 }}>
         <Typography variant="body2" color="text.secondary">
           Don't have an account?{' '}
-          <Link href="#" variant="body2" onClick={onSupportClick}>
+          <Link href="#" variant="body2" onClick={onSupportClick} underline="none">
             Sign up
           </Link>
         </Typography>

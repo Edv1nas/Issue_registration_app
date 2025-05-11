@@ -9,7 +9,7 @@ const Navbar = ({ onCreateTask }) => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/Login');
+    navigate('/');
   };
 
   return (
