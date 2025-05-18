@@ -81,7 +81,7 @@ const LoginPage = () => {
         flexDirection: 'column',
         alignItems: 'center',
       }}>
-        <ThemeLogo size={90} /> 
+        <ThemeLogo size={48} /> 
       </Box>
 
       <LoginForm

@@ -13,17 +13,17 @@ import {
 import { useTheme } from '../../context/ThemeContext';
 import TableHeader from './components/TableHeader';
 import TaskRow from './components/TaskRow';
-import Navbar from './components/NavBar';
+// import Navbar from './components/NavBar';
 import useTasks from '../../hooks/useTasks';
 import useComments from '../../hooks/useComments';
 import CommentForm from '../../components/Comments/CommentForm';
 import CommentList from '../../components/Comments/CommentList';
-import ThemeToggle from '../../components/ui/ThemeToggle';
+// import ThemeToggle from '../../components/ui/ThemeToggle';
 import PaginationControls from '../../components/ui/PaginationControls';
 
 const DashboardMui = () => {
   const { themeMode } = useTheme();
-  const { tasks, expandedTask, toggleExpand, handleCreateTask } = useTasks();
+  const { tasks, expandedTask, toggleExpand} = useTasks();
   const { 
     comments, 
     loadComments, 
@@ -49,15 +49,9 @@ const DashboardMui = () => {
 
   return (
     <>
-      <Navbar 
-        onCreateTask={handleCreateTask} 
-        rightContent={<ThemeToggle />}
-      />
-      
       <Box 
         display="flex" 
         flexDirection="column" 
-        alignItems="center" 
         mt={4}
         px={2}
       >
@@ -65,7 +59,6 @@ const DashboardMui = () => {
           component={Paper} 
           sx={{ 
             width: '100%', 
-            maxWidth: '1800px',
             backgroundColor: themeMode === 'dark' ? 'background.paper' : undefined
           }}
         >
