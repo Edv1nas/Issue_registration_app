@@ -1,6 +1,6 @@
 // components/ui/ThemeLogo.jsx
 import { useTheme } from '@mui/material/styles';
-import logo from '../../assets/images/tkn_logo.png';
+import logo from '../../assets/images/tkn_logox.png';
 
 const ThemeLogo = ({ size = 80 }) => {
   const theme = useTheme();
