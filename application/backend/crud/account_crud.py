@@ -1,5 +1,6 @@
 import logging.config
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from schemas.account_schemas import AccountCreate
 from models.account import Account
 from typing import Optional, Dict, Union
@@ -59,3 +60,16 @@ def authenticate_account(db: Session, username: str, password: str):
     if not pwd_context.verify(password, account.password):
         return False
     return account
+
+def get_system_user(db: Session) -> Optional[Account]:
+    try:
+        return db.query(Account).filter(Account.username == "admin").first()
+    except Exception as e:
+        logger.error("Error occurred while fetching an account.", e)
+        return None
+    
+def get_all_users_from_db(db: Session):
+    user = db.query(Account).order_by(Account.id.asc()).all()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return user

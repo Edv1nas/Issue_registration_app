@@ -16,6 +16,37 @@ class TaskStatusResponse(BaseModel):
             }
         }
 
+
+class AssignedAccountResponse(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "username": "Bob",
+                "email": "bob@hotmail.com",
+            }
+        }
+
+
+class TaskPriorityResponse(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "id": 1,
+                "name": "Low",
+            }
+        }
+
+
 class TaskCreate(BaseModel):
     client_email: EmailStr
     summary: str
@@ -42,8 +73,10 @@ class TaskResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     status: TaskStatusResponse
+    priority: TaskPriorityResponse
     comments: List[CommentResponse]
     image_path: Optional[str] = None
+    assigned_account: Optional[AssignedAccountResponse]
 
     class Config:
         from_attributes = True
@@ -59,6 +92,10 @@ class TaskResponse(BaseModel):
                     "id": 1,
                     "name": "Waiting for support",  
                 },
+                "priority": {
+                    "id": 1,
+                    "name": "Low",
+                },
                 "comments": [
                     {
                         "id": 1,
@@ -69,5 +106,10 @@ class TaskResponse(BaseModel):
                     }
                 ],
                 "image_path": "/uploads/example.jpg",
+                "assigned_account": {
+                    "id": 1,
+                    "username": "Bob",
+                    "email": "bob@hotmail.com",
+                }
             }
         }

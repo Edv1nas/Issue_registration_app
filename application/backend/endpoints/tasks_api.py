@@ -6,7 +6,9 @@ from crud.task_crud import (
     get_all_tasks_from_db,
     get_tasks_by_client_email,
     update_task_status,
-    update_task_image_path
+    update_task_priority,
+    update_task_image_path,
+    update_task_assignee
 )
 from database.db import get_db
 from schemas.task_schemas import TaskCreate, TaskResponse
@@ -54,6 +56,19 @@ def change_task_status(
     updated_task = update_task_status(db, task_id, status_name)
     return updated_task
 
+
+@router.put("/tasks/{task_id}/priority", response_model=TaskResponse)
+def change_task_priority(
+    task_id: int, priority_name: str, db: Session = Depends(get_db)
+):
+    updated_task = update_task_priority(db, task_id, priority_name)
+    return updated_task
+
+
+@router.put("/tasks/{task_id}/assignee", response_model=TaskResponse)
+def change_task_assignee(task_id: int, user_id: int, db: Session = Depends(get_db)):
+    updated_task = update_task_assignee(db, task_id, user_id)
+    return updated_task
 
 @router.put("/tasks/{task_id}")
 def update_task(task_id: int, update_data: dict, db: Session = Depends(get_db)):

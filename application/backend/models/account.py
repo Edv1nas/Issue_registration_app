@@ -1,7 +1,6 @@
 from sqlalchemy import Boolean, Column, Integer, String, TIMESTAMP
-
+from sqlalchemy.orm import relationship
 from datetime import datetime
-
 from database.db import Base
 
 
@@ -16,3 +15,5 @@ class Account(Base):
     created_at = Column(TIMESTAMP, default=datetime.now())
     last_login = Column(TIMESTAMP, nullable=True)
     is_active = Column(Boolean, default=True)
+
+    tasks = relationship("Task", back_populates="assigned_account")

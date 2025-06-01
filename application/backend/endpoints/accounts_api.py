@@ -6,6 +6,7 @@ from crud.account_crud import (
     create_account,
     fetch_account_by_email,
     get_account_by_username,
+    get_all_users_from_db
 )
 from database.db import get_db
 from schemas.account_schemas import AccountCreate, AccountResponse
@@ -64,3 +65,8 @@ def test_account(account_id: int, db: Session = Depends(get_db)):
     except Exception as e:
         logger.exception("Query failed!")
         return {"error": str(e)}
+
+
+@router.get("/users/", response_model=list[AccountResponse])
+def get_all_users(db: Session = Depends(get_db)):
+    return get_all_users_from_db(db)
