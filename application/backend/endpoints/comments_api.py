@@ -18,7 +18,7 @@ logger = logging.getLogger("sLogger")
 router = APIRouter()
 
 
-@router.post("/task/{task_id}/comment/", response_model=CommentResponse)
+@router.post("/task/{task_id}/comment", response_model=CommentResponse)
 def create_new_comment(
     task_id: int,
     comment_data: CommentCreate,
@@ -37,7 +37,7 @@ def create_new_comment(
         raise HTTPException(status_code=500, detail="Failed to create new comment.")
 
 
-@router.get("/tasks/{task_id}/comments", response_model=list[CommentResponse])
+@router.get("/task/{task_id}/comment", response_model=list[CommentResponse])
 def get_comments(task_id: int, db: Session = Depends(get_db)):
     try:
         comments = get_comments_by_task(db, task_id)
@@ -53,7 +53,7 @@ def get_comments(task_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@router.put("/comments/{comment_id}", response_model=CommentResponse)
+@router.put("/{comment_id}", response_model=CommentResponse)
 def modify_comment(comment_id: int, updated_text: str, db: Session = Depends(get_db)):
     try:
         comment = update_comment(db, comment_id, updated_text)
@@ -67,7 +67,7 @@ def modify_comment(comment_id: int, updated_text: str, db: Session = Depends(get
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-@router.delete("/comments/{comment_id}")
+@router.delete("/{comment_id}")
 def remove_comment(comment_id: int, db: Session = Depends(get_db)):
 
     try:

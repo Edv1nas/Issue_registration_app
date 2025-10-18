@@ -10,7 +10,7 @@ class ItemCreate(BaseModel):
     unit_price: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         json_schema_extra = {
             "example": {
                 "name": "SSD 129 GB Samsung 2.5 inch",
@@ -30,7 +30,7 @@ class ItemResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         json_schema_extra = {
             "example": {
                 "item_id": 1,
@@ -50,7 +50,7 @@ class ItemUpdate(BaseModel):
     unit_price: Optional[float] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         json_schema_extra = {
             "example": {
                 "name": "SSD 129 GB Samsung 2.5 inch",

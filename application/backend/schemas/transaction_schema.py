@@ -11,7 +11,7 @@ class TransactionBase(BaseModel):
     location: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         json_schema_extra = {
             "example": {
                 "item_id": 1,
@@ -31,7 +31,7 @@ class Transaction(TransactionBase):
     transaction_date: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         json_schema_extra = {
             "example": {
                 "id": 1,
