@@ -20,7 +20,7 @@ if not os.path.exists(UPLOAD_DIRECTORY):
 
 
 
-@router.post("/upload-image/")
+@router.post("/upload-image")
 async def upload_image(task_id: int, file: UploadFile = File(...), db: Session = Depends(get_db),):
     try:
         file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
